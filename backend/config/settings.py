@@ -3,6 +3,9 @@ from pathlib import Path
 
 import environ
 
+env = environ.Env()
+env.read_env()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-74!21)tgkyark5kh8*p@wv_u76=_5h$13!fpfh=ya$2(nd(mg9"
@@ -55,11 +58,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+POSTGRES_DB = env.str("DB_NAME", default='zadanie')
+POSTGRES_HOST = env("DB_HOST", default='postgres')
+POSTGRES_PASSWORD = env("DB_PASS", default='')
+POSTGRES_USER = env("DB_USER", default='zadanie')
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': env.db(
+        'DATABASE_URL',
+        default=f'postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}',
+    ),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
