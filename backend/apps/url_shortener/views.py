@@ -7,11 +7,11 @@ from .models import Url
 from .serializers import UrlSerializer, UrlCreateSerializer
 
 
-class UrlViewSet(mixins.CreateModelMixin,
-                 mixins.RetrieveModelMixin,
-                 viewsets.GenericViewSet):
+class UrlViewSet(
+    mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     queryset = Url.objects.all()
-    lookup_field = 'short_code'
+    lookup_field = "short_code"
 
     def get_serializer_class(self):
         if self.action == self.create.__name__:
@@ -24,17 +24,16 @@ class UrlViewSet(mixins.CreateModelMixin,
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
 
-        response_serializer = UrlSerializer(instance, context={'request': request})
+        response_serializer = UrlSerializer(instance, context={"request": request})
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=["get"])
     def expand(self, request, short_code=None):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
-        
-    @action(detail=False, methods=['get'], url_path='url/(?P<short_code>[^/.]+)')
+
+    @action(detail=False, methods=["get"], url_path="url/(?P<short_code>[^/.]+)")
     def get_original_url(self, request, short_code=None):
         url_obj = get_object_or_404(Url, short_code=short_code)
-        return Response({'original_url': url_obj.original_url})
-
+        return Response({"original_url": url_obj.original_url})
