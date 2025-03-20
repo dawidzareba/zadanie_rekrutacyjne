@@ -1,22 +1,16 @@
 """
-ASGI config for project project.
+ASGI config for zadanie_rekrutacyjne project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
+https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
-import environ
+
 from django.core.asgi import get_asgi_application
 
-
-env = environ.Env()
-env.read_env()
-
-PROJECT_NAME = env("PROJECT_NAME")
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"{PROJECT_NAME}.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "zadanie_rekrutacyjne.settings")
 
 application = get_asgi_application()
