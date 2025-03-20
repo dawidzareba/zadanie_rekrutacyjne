@@ -2,11 +2,11 @@ from rest_framework import serializers
 from .models import Url
 
 
-class UrlCreateSerializer(serializers.ModelSerializer):
+class BaseUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = Url
-        fields = ('original_url',)
-    
+
+class UrlCreateSerializer(BaseUrlSerializer):
     def create(self, validated_data):
         short_code = Url.create_short_code()
         return Url.objects.create(
@@ -14,13 +14,12 @@ class UrlCreateSerializer(serializers.ModelSerializer):
             short_code=short_code
         )
 
+    class Meta(BaseUrlSerializer.Meta):
+        fields = ('original_url',)
 
-class UrlSerializer(serializers.ModelSerializer):
+
+class UrlSerializer(BaseUrlSerializer):
     short_url = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Url
-        fields = ('original_url', 'short_code', 'short_url', 'created_at',)
     
     def get_short_url(self, obj):
         request = self.context.get('request')
@@ -28,3 +27,6 @@ class UrlSerializer(serializers.ModelSerializer):
             return f"{request.scheme}://{request.get_host()}/r/{obj.short_code}"
 
         return f"/r/{obj.short_code}"
+
+    class Meta(BaseUrlSerializer.Meta):
+        fields = ('original_url', 'short_code', 'short_url', 'created_at',)
