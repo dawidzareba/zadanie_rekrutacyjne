@@ -7,6 +7,8 @@ class BaseUrlSerializer(serializers.ModelSerializer):
         model = Url
 
 class UrlCreateSerializer(BaseUrlSerializer):
+    url = serializers.URLField(source='original_url')
+    
     def create(self, validated_data):
         short_code = Url.create_short_code()
         return Url.objects.create(
@@ -15,7 +17,7 @@ class UrlCreateSerializer(BaseUrlSerializer):
         )
 
     class Meta(BaseUrlSerializer.Meta):
-        fields = ('original_url',)
+        fields = ('url',)
 
 
 class UrlSerializer(BaseUrlSerializer):
@@ -24,9 +26,9 @@ class UrlSerializer(BaseUrlSerializer):
     def get_short_url(self, obj):
         request = self.context.get('request')
         if request:
-            return f"{request.scheme}://{request.get_host()}/r/{obj.short_code}"
+            return f"{request.scheme}://{request.get_host()}/api/url/{obj.short_code}"
 
-        return f"/r/{obj.short_code}"
+        return f"/api/url/{obj.short_code}"
 
     class Meta(BaseUrlSerializer.Meta):
         fields = ('original_url', 'short_code', 'short_url', 'created_at',)

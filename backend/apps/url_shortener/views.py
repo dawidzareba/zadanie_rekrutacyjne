@@ -10,7 +10,7 @@ from .serializers import UrlSerializer, UrlCreateSerializer
 class UrlViewSet(mixins.CreateModelMixin,
                  mixins.RetrieveModelMixin,
                  viewsets.GenericViewSet):
-    queryset = Url.objects.none()
+    queryset = Url.objects.all()
     lookup_field = 'short_code'
 
     def get_serializer_class(self):
