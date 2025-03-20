@@ -30,7 +30,7 @@ class Url(models.Model):
         return None
 
     @classmethod
-    def create_short_code(cls, length=6):
+    def create_short_code(cls, length=6) -> str | None:
         max_attempts = 10
         short_code = cls._generate_short_code(max_attempts=max_attempts, length=length)
 
