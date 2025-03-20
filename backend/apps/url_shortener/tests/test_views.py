@@ -1,14 +1,11 @@
-from django.test import TestCase
-from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
 
 from apps.url_shortener.models import Url
 
 
-class UrlViewSetTest(TestCase):
+class UrlViewSetTest(APITestCase):
     def setUp(self):
-        self.client = APIClient()
         self.url = 'https://example.com'
         self.url_object = Url.objects.create(
             original_url=self.url,
@@ -43,9 +40,8 @@ class UrlViewSetTest(TestCase):
         self.assertEqual(response.data['original_url'], self.url)
 
 
-class GetOriginalUrlTest(TestCase):
+class GetOriginalUrlTest(APITestCase):
     def setUp(self):
-        self.client = APIClient()
         self.url = 'https://example.com'
         self.url_object = Url.objects.create(
             original_url=self.url,
