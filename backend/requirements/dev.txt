@@ -1,1 +1,8 @@
 django-debug-toolbar
+Django
+psycopg2
+django-environ
+djangorestframework
+dj_rest_auth
+django_extensions
+ipython
