@@ -1,0 +1,44 @@
+FROM python:3.10-alpine
+
+ENV PYTHONUNBUFFERED 1
+
+RUN apk add --update --no-cache \
+    postgresql-client \
+    jpeg-dev \
+    cairo-dev \
+    pango-dev \
+    gdk-pixbuf-dev \
+    libffi-dev
+
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc \
+    libc-dev \
+    libffi-dev \
+    linux-headers \
+    postgresql-dev \
+    musl-dev \
+    zlib \
+    zlib-dev \
+    cairo \
+    cairo-dev \
+    pango-dev \
+    gdk-pixbuf-dev \
+    file
+
+WORKDIR /app
+
+ADD ./backend/requirements/base.txt base.txt
+ADD ./backend/requirements/dev.txt dev.txt
+
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade build
+RUN pip install -r base.txt --no-cache-dir
+RUN pip install -r dev.txt --no-cache-dir
+
+## Media dir
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
+RUN chmod -R 755 /vol/web
+
+RUN mkdir -p /backend/media
+RUN chmod -R 755 /backend/media

@@ -1,0 +1,67 @@
+x-common-variables: &common-variables
+  PYTHON_VERSION: ${PYTHON_VERSION:-3.12.7}
+
+x-variables-with-db: &variables-with-db
+  <<: *common-variables
+  POSTGRES_DB: ${DB_NAME:-dbname}
+  POSTGRES_HOST: ${DB_HOST:-postgres}
+  POSTGRES_PASSWORD: ${DB_PASS:-12345}
+  POSTGRES_USER: ${DB_USER:-dbuser}
+
+services:
+  postgres:
+    build: ./docker/postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup_dev:/backups
+    env_file:
+      - .env
+    environment:
+      <<: *variables-with-db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    logging:
+      driver: ${REDIS_LOGGER:-none}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  django:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+      target: development
+      args:
+        <<: *variables-with-db
+        requirements_version: dev
+    command: python backend/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app/backend/
+      - ./static:/app/static
+      - media_cache:/app/media
+      - ./.git/HEAD:/HEAD
+    environment:
+      <<: *variables-with-db
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+
+
+volumes:
+  postgres_data:
+  postgres_backup_dev:
+  media_cache:
