@@ -19,6 +19,14 @@ class UrlViewSet(mixins.CreateModelMixin,
 
         return UrlSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+
+        response_serializer = UrlSerializer(instance, context={'request': request})
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
     @action(detail=True, methods=['get'])
     def expand(self, request, short_code=None):
         instance = self.get_object()
