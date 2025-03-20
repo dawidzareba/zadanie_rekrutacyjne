@@ -49,12 +49,12 @@ class GetOriginalUrlTest(APITestCase):
         )
     
     def test_get_original_url(self):
-        response = self.client.get(f'/api/url/{self.url_object.short_code}')
+        response = self.client.get(f'/api/urls/url/{self.url_object.short_code}')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['original_url'], self.url)
     
     def test_get_original_url_not_found(self):
-        response = self.client.get('/api/url/nonexistent')
+        response = self.client.get('/api/urls/url/nonexistent')
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

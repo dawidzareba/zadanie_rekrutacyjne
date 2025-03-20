@@ -32,4 +32,9 @@ class UrlViewSet(mixins.CreateModelMixin,
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+        
+    @action(detail=False, methods=['get'], url_path='url/(?P<short_code>[^/.]+)')
+    def get_original_url(self, request, short_code=None):
+        url_obj = get_object_or_404(Url, short_code=short_code)
+        return Response({'original_url': url_obj.original_url})
 

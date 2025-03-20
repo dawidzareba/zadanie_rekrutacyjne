@@ -27,7 +27,7 @@ class UrlSerializerTest(TestCase):
         serializer = UrlSerializer(instance=self.url_object, context={'request': request})
         data = serializer.data
         
-        expected_url = f"http://testserver/api/url/{self.url_object.short_code}"
+        expected_url = f"http://testserver/api/urls/url/{self.url_object.short_code}"
         self.assertEqual(data['short_url'], expected_url)
 
 
