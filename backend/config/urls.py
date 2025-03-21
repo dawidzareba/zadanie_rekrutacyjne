@@ -5,9 +5,9 @@ from apps.common.routers import OptionalSlashRouter
 from apps.url_shortener.views import UrlViewSet
 
 router = OptionalSlashRouter()
-router.register('urls', UrlViewSet, basename='urls')
+router.register("urls", UrlViewSet, basename="urls")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/', include(router.urls)),
+    path("api/", include(router.urls)),
 ]
