@@ -5,7 +5,7 @@ from constance.test import override_config
 
 
 class UrlModelTest(TestCase):
-    @override_config(SHORT_URL_LENGTH=3, GENERATE_URL_MAX_RETRIES=5)
+    @override_config(SHORT_URL_LENGTH=3)
     def test_create_short_code(self):
         code1 = Url.create_short_code()
         code2 = Url.create_short_code()
