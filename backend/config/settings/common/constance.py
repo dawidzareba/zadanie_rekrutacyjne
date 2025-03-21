@@ -9,17 +9,7 @@ CONSTANCE_CONFIG = {
         "Length of the short URL you are looking for",
         int,
     ),
-    "GENERATE_URL_MAX_RETRIES": (
-        5,
-        "Number of maximum retries to generate URLs",
-        int,
-    ),
 }
 
 
-CONSTANCE_CONFIG_FIELDSETS = {
-    "Technical settings": (
-        "SHORT_URL_LENGTH",
-        "GENERATE_URL_MAX_RETRIES",
-    )
-}
+CONSTANCE_CONFIG_FIELDSETS = {"Technical settings": ("SHORT_URL_LENGTH",)}

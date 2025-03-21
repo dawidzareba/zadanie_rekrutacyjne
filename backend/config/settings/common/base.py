@@ -103,7 +103,6 @@ REDIS_SESSION_DB = env.int("REDIS_SESSION_DB", 3)
 KEY_PREFIX_SESSION = "zadanie-session"
 CACHE_VERSION = 2
 KEY_PREFIX = "zadanie"
-KEY_FUNCTION = "apps.common.utils.make_cache_key"
 
 REDIS_CACHE = {
     "BACKEND": "django.core.cache.backends.redis.RedisCache",
@@ -111,7 +110,6 @@ REDIS_CACHE = {
     "OPTIONS": {"health_check_interval": 30},
     "KEY_PREFIX": KEY_PREFIX,
     "VERSION": CACHE_VERSION,
-    "KEY_FUNCTION": KEY_FUNCTION,
 }
 
 REDIS_SESSION_CACHE = {
@@ -120,21 +118,20 @@ REDIS_SESSION_CACHE = {
     "OPTIONS": {"health_check_interval": 30},
     "KEY_PREFIX": KEY_PREFIX_SESSION,
     "VERSION": CACHE_VERSION,
-    "KEY_FUNCTION": KEY_FUNCTION,
 }
 
 CACHES = {"default": REDIS_CACHE, "session": REDIS_SESSION_CACHE}
 
 REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle',
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '1000/day',
-        'url_create': '50/day',
-        'url_retrieve': '1000/day',
-        'url_original': '2000/day',
-    }
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day",
+        "url_create": "50/day",
+        "url_retrieve": "1000/day",
+        "url_original": "2000/day",
+    },
 }
