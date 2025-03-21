@@ -11,3 +11,16 @@ if DEBUG:
         "10.0.2.2",
     ]
     ALLOWED_HOSTS = ["*"]
+
+SILK_ENABLED = True
+SILK_TRACK_MIDDLEWARES = False
+
+if SILK_ENABLED:
+    INSTALLED_APPS += ("silk",)
+    if SILK_TRACK_MIDDLEWARES:
+        MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
+    else:
+        MIDDLEWARE.append("silk.middleware.SilkyMiddleware")
+
+    SILKY_AUTHENTICATION = False
+    SILKY_AUTHORISATION = False

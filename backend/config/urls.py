@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
@@ -11,3 +12,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
 ]
+
+if settings.SILK_ENABLED:
+    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]

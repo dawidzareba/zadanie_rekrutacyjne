@@ -22,23 +22,7 @@ class Url(models.Model):
         return None
 
     @classmethod
-    def _generate_short_code(cls, max_attempts: int, length: int) -> str | None:
-        for _ in range(max_attempts):
-            short_code = cls._process_short_code(length=length)
-            if short_code:
-                return short_code
-
-        return None
-
-    @classmethod
     def create_short_code(cls, length=None) -> str | None:
         length = config.SHORT_URL_LENGTH if length is None else length
 
-        short_code = cls._generate_short_code(
-            max_attempts=config.GENERATE_URL_MAX_RETRIES, length=length
-        )
-
-        if not short_code:
-            return cls.create_short_code(length=length + 1)
-
-        return short_code
+        return cls._process_short_code(length=length)
