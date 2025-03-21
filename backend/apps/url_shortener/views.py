@@ -41,3 +41,7 @@ class UrlViewSet(
 
         response_serializer = UrlSerializer(instance, context={"request": request})
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+    @method_decorator(cache_page(60 * 60 * 24))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)

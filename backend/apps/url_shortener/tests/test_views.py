@@ -1,6 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 from unittest import mock
+from django.core.cache import cache
+from django.test.utils import override_settings
 
 from apps.url_shortener.models import Url
 
@@ -66,3 +68,49 @@ class ThrottlingTest(APITestCase):
 
         self.assertIn("url_create", settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"])
         self.assertIn("url_retrieve", settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"])
+
+
+class CachingTest(APITestCase):
+    def setUp(self):
+        self.url = "https://example.com"
+        self.url_object = Url.objects.create(original_url=self.url, short_code="abc123")
+        cache.clear()
+
+        self.throttle_patcher = mock.patch(
+            "rest_framework.throttling.ScopedRateThrottle.allow_request",
+            return_value=True,
+        )
+        self.throttle_patcher.start()
+
+    def tearDown(self):
+        self.throttle_patcher.stop()
+        cache.clear()
+
+    def test_retrieve_caching(self):
+        with self.assertNumQueries(1):
+            response1 = self.client.get(f"/api/urls/{self.url_object.short_code}")
+            self.assertEqual(response1.status_code, status.HTTP_200_OK)
+
+        with self.assertNumQueries(0):
+            response2 = self.client.get(f"/api/urls/{self.url_object.short_code}")
+            self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(response1.data, response2.data)
+
+    @override_settings(ROOT_URLCONF="config.urls")
+    def test_cache_invalidation(self):
+        response1 = self.client.get(f"/api/urls/{self.url_object.short_code}")
+        self.assertEqual(response1.status_code, status.HTTP_200_OK)
+
+        new_url = "https://updated-example.com"
+        self.url_object.original_url = new_url
+        self.url_object.save()
+
+        with self.assertNumQueries(0):
+            response2 = self.client.get(f"/api/urls/{self.url_object.short_code}")
+            self.assertEqual(response2.data["original_url"], self.url)
+
+        cache.clear()
+        with self.assertNumQueries(1):
+            response3 = self.client.get(f"/api/urls/{self.url_object.short_code}")
+            self.assertEqual(response3.data["original_url"], new_url)  # New URL
