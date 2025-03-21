@@ -8,27 +8,21 @@ env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-74!21)tgkyark5kh8*p@wv_u76=_5h$13!fpfh=ya$2(nd(mg9"
-DEBUG = True
-
-if DEBUG:
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
-        "127.0.0.1",
-        "10.0.2.2",
-    ]
-    ALLOWED_HOSTS = ['*']
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "apps.url_shortener",
 ]
+OTHER_APPS = [
+    "rest_framework",
+    "constance",
+]
+MY_APPS = ["apps.url_shortener"]
+
+INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -60,15 +54,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-POSTGRES_DB = env.str("DB_NAME", default='zadanie')
-POSTGRES_HOST = env("DB_HOST", default='postgres')
-POSTGRES_PASSWORD = env("DB_PASS", default='')
-POSTGRES_USER = env("DB_USER", default='zadanie')
+POSTGRES_DB = env.str("DB_NAME", default="zadanie")
+POSTGRES_HOST = env("DB_HOST", default="postgres")
+POSTGRES_PASSWORD = env("DB_PASS", default="")
+POSTGRES_USER = env("DB_USER", default="zadanie")
 
 DATABASES = {
-    'default': env.db(
-        'DATABASE_URL',
-        default=f'postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}',
+    "default": env.db(
+        "DATABASE_URL",
+        default=f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}",
     ),
 }
 
@@ -98,3 +92,34 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REDIS_HOSTNAME = env("REDIS_HOSTNAME", default="redis")
+REDIS_HOSTNAME_FOR_WEBSOCKETS = env("REDIS_HOSTNAME_FOR_WEBSOCKETS", default="redis")
+REDIS_PORT = 6379
+REDIS_CELERY_BROKER_DB = env.int("REDIS_CELERY_BROKER_DB", 0)
+REDIS_CELERY_RESULT_BACKEND_DB = env.int("REDIS_CELERY_RESULT_BACKEND_DB", 1)
+REDIS_MAIN_DB = env.int("REDIS_MAIN_DB", 2)
+REDIS_SESSION_DB = env.int("REDIS_SESSION_DB", 3)
+
+KEY_PREFIX_SESSION = "zadanie-session"
+CACHE_VERSION = 2
+KEY_PREFIX = "zadanie"
+KEY_FUNCTION = "apps.common.utils.make_cache_key"
+
+REDIS_CACHE = {
+    "BACKEND": "django.core.cache.backends.redis.RedisCache",
+    "LOCATION": f"redis://{REDIS_HOSTNAME}/{REDIS_MAIN_DB}",
+    "OPTIONS": {"health_check_interval": 30},
+    "KEY_PREFIX": KEY_PREFIX,
+    "VERSION": CACHE_VERSION,
+    "KEY_FUNCTION": KEY_FUNCTION,
+}
+
+REDIS_SESSION_CACHE = {
+    "BACKEND": "django.core.cache.backends.redis.RedisCache",
+    "LOCATION": f"redis://{REDIS_HOSTNAME}/{REDIS_SESSION_DB}",
+    "OPTIONS": {"health_check_interval": 30},
+    "KEY_PREFIX": KEY_PREFIX_SESSION,
+    "VERSION": CACHE_VERSION,
+    "KEY_FUNCTION": KEY_FUNCTION,
+}

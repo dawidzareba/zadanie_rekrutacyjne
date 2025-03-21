@@ -6,3 +6,5 @@ djangorestframework
 dj_rest_auth
 django_extensions
 ipython
+django-constance
+redis

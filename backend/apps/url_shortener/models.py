@@ -1,3 +1,4 @@
+from constance import config
 from django.db import models
 import random
 import string
@@ -31,8 +32,9 @@ class Url(models.Model):
 
     @classmethod
     def create_short_code(cls, length=6) -> str | None:
-        max_attempts = 10
-        short_code = cls._generate_short_code(max_attempts=max_attempts, length=length)
+        short_code = cls._generate_short_code(
+            max_attempts=config.GENERATE_URL_MAX_RETRIES, length=length
+        )
 
         if not short_code:
             return cls.create_short_code(length=length + 1)
