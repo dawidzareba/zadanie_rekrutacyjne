@@ -31,7 +31,9 @@ class Url(models.Model):
         return None
 
     @classmethod
-    def create_short_code(cls, length=6) -> str | None:
+    def create_short_code(cls, length=None) -> str | None:
+        length = config.SHORT_URL_LENGTH if length is None else length
+
         short_code = cls._generate_short_code(
             max_attempts=config.GENERATE_URL_MAX_RETRIES, length=length
         )

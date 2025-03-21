@@ -1,4 +1,5 @@
-from config.settings.common import *
+import socket
+from config.settings.common import *  # noqa
 
 SECRET_KEY = "django-insecure-74!21)tgkyark5kh8*p@wv_u76=_5h$13!fpfh=ya$2(nd(mg9"
 DEBUG = True
