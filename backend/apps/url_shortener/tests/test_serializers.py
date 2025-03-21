@@ -2,6 +2,7 @@ from django.test import TestCase
 from apps.url_shortener.models import Url
 from apps.url_shortener.serializers import UrlSerializer, UrlCreateSerializer
 from rest_framework.test import APIRequestFactory
+from constance.test import override_config
 
 
 class UrlSerializerTest(TestCase):
@@ -35,6 +36,7 @@ class UrlSerializerTest(TestCase):
 
 
 class UrlCreateSerializerTest(TestCase):
+    @override_config(SHORT_URL_LENGTH=3)
     def test_url_create_serializer_creates_url(self):
         data = {"url": "https://example.com"}
         serializer = UrlCreateSerializer(data=data)
@@ -44,4 +46,4 @@ class UrlCreateSerializerTest(TestCase):
 
         self.assertEqual(url_object.original_url, "https://example.com")
         self.assertIsNotNone(url_object.short_code)
-        self.assertEqual(len(url_object.short_code), 6)
+        self.assertEqual(len(url_object.short_code), 3)
