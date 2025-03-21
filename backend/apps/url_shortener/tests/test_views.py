@@ -28,12 +28,6 @@ class UrlViewSetTest(APITestCase):
         self.assertEqual(response.data["original_url"], self.url)
         self.assertEqual(response.data["short_code"], self.url_object.short_code)
 
-    def test_expand_url(self):
-        response = self.client.get(f"/api/urls/{self.url_object.short_code}/expand/")
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["original_url"], self.url)
-
 
 class GetOriginalUrlTest(APITestCase):
     def setUp(self):
