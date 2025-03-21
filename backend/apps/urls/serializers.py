@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from .models import Url
+from .models import ShortUrl
 
 
 class BaseUrlSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Url
+        model = ShortUrl
 
 
 class UrlCreateSerializer(BaseUrlSerializer):
     url = serializers.URLField(source="original_url")
 
     def create(self, validated_data):
-        short_code = Url.create_short_code()
-        return Url.objects.create(
+        short_code = ShortUrl.create_short_code()
+        return ShortUrl.objects.create(
             original_url=validated_data["original_url"], short_code=short_code
         )
 

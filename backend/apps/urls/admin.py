@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Url
+from .models import ShortUrl
 
 
-@admin.register(Url)
+@admin.register(ShortUrl)
 class UrlAdmin(admin.ModelAdmin):
     list_display = ("short_code", "original_url", "created_at")
     search_fields = ("short_code", "original_url")

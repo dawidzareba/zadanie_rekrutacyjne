@@ -19,7 +19,7 @@ OTHER_APPS = [
     "rest_framework",
     "constance",
 ]
-MY_APPS = ["apps.url_shortener"]
+MY_APPS = ["apps.urls"]
 
 INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 

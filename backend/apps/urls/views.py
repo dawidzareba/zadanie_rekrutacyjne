@@ -4,14 +4,14 @@ from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 
-from .models import Url
+from .models import ShortUrl
 from .serializers import UrlSerializer, UrlCreateSerializer
 
 
 class UrlViewSet(
     mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
-    queryset = Url.objects.all()
+    queryset = ShortUrl.objects.all()
     lookup_field = "short_code"
 
     throttle_classes = [ScopedRateThrottle]
