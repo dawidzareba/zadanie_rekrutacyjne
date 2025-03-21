@@ -12,7 +12,7 @@ if DEBUG:
     ]
     ALLOWED_HOSTS = ["*"]
 
-SILK_ENABLED = True
+SILK_ENABLED = False
 SILK_TRACK_MIDDLEWARES = False
 
 if SILK_ENABLED:

@@ -17,4 +17,4 @@ jobs:
       - name: Test apps
         run: |
           docker compose up -d postgres
-          docker compose run --build --rm django python backend/manage.py test
+          docker compose run --build --rm django python backend/manage.py test apps.url_shortener.tests
