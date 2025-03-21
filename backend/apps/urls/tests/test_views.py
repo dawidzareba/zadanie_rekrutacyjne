@@ -4,13 +4,15 @@ from unittest import mock
 from django.core.cache import cache
 from django.test.utils import override_settings
 
-from apps.url_shortener.models import Url
+from apps.urls.models import ShortUrl
 
 
 class UrlViewSetTest(APITestCase):
     def setUp(self):
         self.url = "https://example.com"
-        self.url_object = Url.objects.create(original_url=self.url, short_code="abc123")
+        self.url_object = ShortUrl.objects.create(
+            original_url=self.url, short_code="abc123"
+        )
         self.throttle_patcher = mock.patch(
             "rest_framework.throttling.ScopedRateThrottle.allow_request",
             return_value=True,
@@ -29,7 +31,7 @@ class UrlViewSetTest(APITestCase):
         self.assertIn("short_url", response.data)
         self.assertIn("short_code", response.data)
         self.assertEqual(response.data["original_url"], "https://example.org")
-        self.assertEqual(Url.objects.count(), 2)
+        self.assertEqual(ShortUrl.objects.count(), 2)
 
     def test_retrieve_url(self):
         response = self.client.get(
@@ -55,10 +57,12 @@ class UrlViewSetTest(APITestCase):
 class ThrottlingTest(APITestCase):
     def setUp(self):
         self.url = "https://example.com"
-        self.url_object = Url.objects.create(original_url=self.url, short_code="abc123")
+        self.url_object = ShortUrl.objects.create(
+            original_url=self.url, short_code="abc123"
+        )
 
     def test_throttling_applied(self):
-        from apps.url_shortener.views import UrlViewSet
+        from apps.urls.views import UrlViewSet
         from rest_framework.throttling import ScopedRateThrottle
         from django.conf import settings
 
@@ -73,7 +77,9 @@ class ThrottlingTest(APITestCase):
 class CachingTest(APITestCase):
     def setUp(self):
         self.url = "https://example.com"
-        self.url_object = Url.objects.create(original_url=self.url, short_code="abc123")
+        self.url_object = ShortUrl.objects.create(
+            original_url=self.url, short_code="abc123"
+        )
         cache.clear()
 
         self.throttle_patcher = mock.patch(

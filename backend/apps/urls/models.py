@@ -4,7 +4,7 @@ import random
 import string
 
 
-class Url(models.Model):
+class ShortUrl(models.Model):
     original_url = models.URLField(max_length=2048)
     short_code = models.CharField(max_length=10, unique=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)

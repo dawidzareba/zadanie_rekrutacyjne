@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from apps.common.routers import OptionalSlashRouter
-from apps.url_shortener.views import UrlViewSet
+from apps.urls.views import UrlViewSet
 
 router = OptionalSlashRouter()
 router.register("urls", UrlViewSet, basename="urls")
