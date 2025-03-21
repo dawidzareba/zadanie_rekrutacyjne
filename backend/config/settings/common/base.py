@@ -1,4 +1,3 @@
-import socket
 from pathlib import Path
 
 import environ
